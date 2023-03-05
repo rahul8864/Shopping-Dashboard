@@ -36,6 +36,7 @@ export default function Product() {
                 <span className={styles.heading}>rotating product list</span>
             </div>
             <div className={styles.cards}>
+            {list.length > 0 &&
               <OwlCarousel className="owl-carousel owl-theme" {...options}>
               {list?.map((item, index) => (
               <Link to={`/products/${item.id}`} className={`${styles.mainContainer} item`} key={index}>
@@ -52,6 +53,7 @@ export default function Product() {
               </Link>
               ))}
             </OwlCarousel>
+            }
             </div>
         </div>
     </>
