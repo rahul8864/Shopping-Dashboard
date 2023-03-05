@@ -5,7 +5,10 @@ import { Link, useParams } from "react-router-dom";
 import axios from "axios";
 
 export default function ProductDetails() {
-  const [list, setList] = useState();
+  const [list, setList] = useState([]);
+  const local = JSON.parse(localStorage.getItem('cart'))
+  const [cart, setCart] = useState(local || []);
+  const [checked, setChecked] = useState(false);
   const animations = {
     initial: { opacity: 0, y: 100 },
     animate: { opacity: 1, y: 0 },
@@ -20,12 +23,36 @@ export default function ProductDetails() {
       .then((data) => setList(data?.data));
   }, []);
 
+  useEffect(() => {
+    if(cart.length > 0) {
+      const filteredArray = cart?.filter((v, i, a) => a.findIndex(t => (JSON.stringify(t) === JSON.stringify(v)))===i);
+      localStorage.setItem('cart', JSON.stringify(filteredArray));
+    }
+  },[cart])
+
 
   const handleCart = (data) => {
     // const already = JSON.parse(localStorage.getItem('cart'))
     // const add = [...already, data]
-    localStorage.setItem('cart', JSON.stringify(data))
+    if(data) {
+      setCart([...cart, data])
+    }
+    // if(checked) {
+    //   const remove = local?.filter(item => item.id !== data.id);
+    //   console.log(remove)
+    //   localStorage.setItem('cart', JSON.stringify(remove));
+    // }
   }
+
+  useEffect(() => {
+    if(local?.length > 0) {
+      const check = local?.some(item => item.id === list.id)
+      setChecked(check)
+    }
+  },[local, list])
+
+  console.log(checked)
+
 
   return (
     <motion.div
@@ -49,6 +76,7 @@ export default function ProductDetails() {
           <div className={styles.boxInside}>
             <span className={styles.title}>{list?.title}</span>
             <span className={styles.category}>{list?.category}</span>
+            <span className={`${styles.title} text-muted mt-1 mb-1`}>₹ {list?.price}</span>
             <span className={styles.rate}>
               <i className="fa-solid fa-star text-warning me-1"></i>
               <span className="ml-2">{`${list?.rating?.rate} (${list?.rating?.count})`}</span>
@@ -57,7 +85,7 @@ export default function ProductDetails() {
           </div>
             {/* <button className={`${styles.cart} btn btn-outline-danger`}>+ Add to Cart</button> */}
           <div className={`${styles.buttonAdd}`}>
-            <button className={`${styles.cart} btn btn-outline-danger`} onClick={() => handleCart(list)}>+ Add to Cart</button>
+            <button className={`${styles.cart} btn btn-outline-danger`} onClick={() => handleCart(list)}>{!checked ? '+ Add to Cart' : 'Remove to Cart'}</button>
             <button className={`${styles.buy} btn btn-outline-primary`}>Buy Now</button>
           </div>
           </div>

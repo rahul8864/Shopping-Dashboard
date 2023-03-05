@@ -9,6 +9,7 @@ import Carousel from './Components/Carousel/Carousel'
 import Products from './Components/Products/Products'
 import ProductDetails from './Components/ProductDetails/ProductDetails'
 import Footer from './Components/Footer/Footer'
+import Cart from './Components/Cart/Cart'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -31,6 +32,12 @@ function App() {
           <>
           <Header/>
           <Products/>
+          </>
+        }/>
+        <Route path='/cart' element={
+          <>
+          <Header/>
+          <Cart/>
           </>
         }/>
         <Route path='/products/:id' element={
